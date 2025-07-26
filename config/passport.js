@@ -1,4 +1,3 @@
-const User = require("../service/userService");
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const LocalStrategy = require("passport-local").Strategy;
@@ -9,7 +8,11 @@ const customFields = {
 passport.use(
   new LocalStrategy(customFields, async (username, password, done) => {
     try {
-      const user = await User.findByEmail(username);
+      const user = await prisma.user.findUnique({
+        where: {
+          email: email,
+        },
+      });
       if (!user) {
         return done(null, false, { message: "Incorrect email" });
       }
@@ -30,7 +33,11 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await User.findById(id);
+    const user = await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
     done(null, user);
   } catch (err) {
     done(err);

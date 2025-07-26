@@ -1,8 +1,5 @@
 const { body, validationResult } = require("express-validator");
-
-const User = require("../service/userService");
-
-const alphaErr = "must only contain letters.";
+const prisma = require("../config/prismaClient");
 const emailErr = "must be a valid email";
 const passwordErr = "must be at least 8 characters";
 const emptyErr = "cannot be empty";
@@ -20,7 +17,12 @@ const validateSignup = [
     .isEmail()
     .withMessage(`Email ${emailErr}`)
     .custom(async (value) => {
-      const user = await User.findByEmail(value);
+      const user = await prisma.user.findUnique({
+        where: {
+          email: email,
+        },
+      });
+
       if (user) {
         throw new Error("Email is already used");
       }

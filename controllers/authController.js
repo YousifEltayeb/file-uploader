@@ -4,7 +4,7 @@ const {
   validationResult,
 } = require("../utils/validation");
 const bcrypt = require("bcryptjs");
-const User = require("../service/userService");
+const prisma = require("../config/prismaClient");
 const passport = require("passport");
 
 exports.getSignup = (req, res) => {
@@ -24,7 +24,12 @@ exports.postSignup = [
     const { email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create(email, hashedPassword);
+    await prisma.user.create({
+      data: {
+        email,
+        hashedPassword,
+      },
+    });
 
     res.redirect("/auth/login");
   },
