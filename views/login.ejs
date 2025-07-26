@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+  </head>
+  <body>
+    <% if(currentUser) { %>
+    <h1>You are already logged in</h1>
+    <a href="/">Let's take you back home</a>
+    <% } else {%>
+    <h1>Login</h1>
+    <br />
+    <%- include("errors.ejs") %>
+    <br />
+    <form action="/login" method="POST">
+      <label for="email">Email:</label>
+      <input type="email" name="email" id="email" required />
+
+      <label for="password">Password:</label>
+      <input type="password" name="password" id="password" required />
+
+      <button type="submit">Login</button>
+    </form>
+    If you don't have an account,<a href="/auth/signup"> sign up here</a>
+    <br />
+    <br />
+    <% } %>
+  </body>
+</html>

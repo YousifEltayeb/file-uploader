@@ -1,0 +1,7 @@
+<% if (locals.validationError) {%>
+<ul>
+  <% validationError.forEach(function(error) { %>
+  <li><%= error.msg %></li>
+  <% }); %>
+</ul>
+<% } else if(locals.loginError) { %> <%= loginError %> <% } %>

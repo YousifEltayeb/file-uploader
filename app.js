@@ -9,6 +9,8 @@ const passport = require("passport");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const prisma = require("./config/prismaClient");
 const indexRouter = require("./routes/indexRouter");
+const authRouter = require("./routes/authRouter");
+
 app.use(express.urlencoded({ extended: true }));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -42,7 +44,8 @@ app.use((req, res, next) => {
 
 // TODO add routes
 
-app.use("/", indexRouter);
+app.use("/{folders}", indexRouter);
+app.use("/auth", authRouter);
 app.all("/{*splat}", (req, res) => {
   res.status(404).render("404");
 });
