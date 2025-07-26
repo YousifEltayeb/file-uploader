@@ -50,4 +50,26 @@ const validateSignup = [
     .withMessage(`Passwords must match`),
 ];
 
-module.exports = { validateSignup, validationResult };
+const validateLogin = [
+  body("email")
+    .exists()
+    .withMessage(`Email ${existErr}`)
+    .bail()
+    .trim()
+    .notEmpty()
+    .withMessage(`Email ${emptyErr}`)
+    .bail()
+    .isEmail()
+    .withMessage(`Email ${emailErr}`),
+  body("password")
+    .exists()
+    .withMessage(`Password ${existErr}`)
+    .bail()
+    .trim()
+    .notEmpty()
+    .withMessage(`Password ${emptyErr}`)
+    .bail()
+    .isLength({ min: 8 })
+    .withMessage(`Password ${passwordErr}`),
+];
+module.exports = { validateLogin, validateSignup, validationResult };

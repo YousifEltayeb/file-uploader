@@ -10,7 +10,6 @@ passport.use(
   new LocalStrategy(customFields, async (username, password, done) => {
     try {
       const user = await User.findByEmail(username);
-
       if (!user) {
         return done(null, false, { message: "Incorrect email" });
       }
