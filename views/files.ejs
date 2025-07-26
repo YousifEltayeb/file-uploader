@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Files</title>
+  </head>
+  <body>
+    <h1>My files</h1>
+    <a href="/">Go back to folders</a>
+    <br />
+    <br />
+    <% if(locals.files && locals.folderId) { %>
+
+    <form
+      action="/folders/upload/<%= folderId %>"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <input type="file" name="file" required />
+      <button type="submit">Upload</button>
+    </form>
+    <p>There are: <%= files.length %> files in this folder</p>
+    <% files.forEach(function(file) { %>
+    <a href="/files/:<%= file.id %>">Title: <%= file.title %></a>
+    <% }) %> <% } %>
+  </body>
+</html>
