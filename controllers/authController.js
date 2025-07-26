@@ -52,7 +52,6 @@ exports.postLogin = [
   },
   validateLogin,
   async (req, res, next) => {
-    console.log("what");
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {

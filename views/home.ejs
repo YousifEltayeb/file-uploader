@@ -10,11 +10,20 @@
     <a href="/auth/logout">Click here to logout</a>
     <br />
     <br />
+    <%- include("errors.ejs") %>
+    <form action="/folders/create" method="POST">
+      <label for="title">Folder title:</label>
+      <input type="text" name="title" id="title" />
+      <button type="submit">Create Folder</button>
+    </form>
+    <br />
+    <br />
+    <% if(locals.folders) { %>
     <h1>My Folders</h1>
     <br />
     <% folders.forEach(function(folder) { %>
-    <a href="/folders/<% folder.id %>"> <%= folder.title %> </a>
+    <a href="/folders/<%= folder.id %>"> <%= folder.title %> </a>
     <br />
-    <% }) %> <% } %>
+    <% }) %> <% } %> <% } %>
   </body>
 </html>

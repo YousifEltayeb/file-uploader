@@ -1,6 +1,7 @@
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const LocalStrategy = require("passport-local").Strategy;
+const prisma = require("../config/prismaClient");
 
 const customFields = {
   usernameField: "email",

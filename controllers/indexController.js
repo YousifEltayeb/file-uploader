@@ -1,9 +1,10 @@
+const prisma = require("../config/prismaClient");
 exports.getHome = async (req, res) => {
   if (req.user) {
-    const id = req.user.id;
-    const folders = await prisma.user.findMany({
+    const userId = req.user.id;
+    const folders = await prisma.folder.findMany({
       where: {
-        id: id,
+        userId: userId,
       },
     });
     res.render("home", { folders: folders });

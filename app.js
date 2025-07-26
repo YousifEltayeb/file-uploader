@@ -10,6 +10,7 @@ const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const prisma = require("./config/prismaClient");
 const indexRouter = require("./routes/indexRouter");
 const authRouter = require("./routes/authRouter");
+const foldersRouter = require("./routes/foldersRouter");
 
 app.use(express.urlencoded({ extended: true }));
 app.set("views", path.join(__dirname, "views"));
@@ -46,6 +47,7 @@ app.use((req, res, next) => {
 
 app.use("/{folders}", indexRouter);
 app.use("/auth", authRouter);
+app.use("/folders", foldersRouter);
 app.all("/{*splat}", (req, res) => {
   res.status(404).render("404");
 });

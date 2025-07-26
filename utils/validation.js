@@ -74,4 +74,21 @@ const validateLogin = [
     .isLength({ min: 8 })
     .withMessage(`Password ${passwordErr}`),
 ];
-module.exports = { validateLogin, validateSignup, validationResult };
+const validateCreateFolder = [
+  body("title")
+    .exists()
+    .withMessage(`Title ${existErr}`)
+    .bail()
+    .trim()
+    .notEmpty()
+    .withMessage(`Title ${emptyErr}`)
+    .bail()
+    .isAlpha()
+    .withMessage(`Title must contain characters only`),
+];
+module.exports = {
+  validateCreateFolder,
+  validateLogin,
+  validateSignup,
+  validationResult,
+};
