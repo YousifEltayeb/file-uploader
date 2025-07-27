@@ -95,3 +95,22 @@ exports.postUpdate = [
     res.redirect("/");
   },
 ];
+
+exports.postDelete = [
+  async (req, res, next) => {
+    await authOwner(req, res, next, { folderId: Number(req.params.folderId) });
+  },
+  async (req, res) => {
+    const folderId = Number(req.params.folderId);
+    const folder = await prisma.folder.findUnique({
+      where: { id: folderId },
+      include: { files: true },
+    });
+    if (folder.files.length > 0) {
+      return res.send("you can only delete a folder it doesnt have files");
+    }
+
+    await prisma.folder.delete({ where: { id: folderId } });
+    res.redirect("/");
+  },
+];

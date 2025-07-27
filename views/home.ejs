@@ -22,8 +22,11 @@
     <h1>My Folders</h1>
     <br />
     <% folders.forEach(function(folder) { %>
-    <a href="/folders/<%= folder.id %>"> <%= folder.title %> </a>
     <br />
+    <a href="/folders/<%= folder.id %>"> <%= folder.title %> </a>
+    <form action="/folders/delete/<%= folder.id %>" method="POST">
+      <button type="submit">Delete folder</button>
+    </form>
     <br />
     <form action="/folders/update/<%= folder.id %>" method="GET">
       <button type="submit">Change title</button>

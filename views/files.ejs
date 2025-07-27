@@ -21,6 +21,10 @@
       <button type="submit">Upload</button>
     </form>
     <p>There are: <%= files.length %> files in this folder</p>
+    <br />
+    <form action="/files/delete/all/<%= folderId %>" method="POST">
+      <button type="submit">Delete all files</button>
+    </form>
     <% files.forEach(function(file) { %>
     <a href="/files/<%= file.id %>">Title: <%= file.title %></a>
     <br />

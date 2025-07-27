@@ -47,3 +47,32 @@ exports.postUpdate = [
     res.redirect(`/files/${fileId}`);
   },
 ];
+
+exports.postDelete = [
+  async (req, res, next) =>
+    await authOwner(req, res, next, { fileId: Number(req.params.fileId) }),
+  async (req, res) => {
+    const fileId = Number(req.params.fileId);
+    const file = await prisma.file.findUnique({ where: { id: fileId } });
+    await prisma.file.delete({
+      where: {
+        id: fileId,
+      },
+    });
+    res.redirect(`/folders/${file.folderId}`);
+  },
+];
+
+exports.postDeleteAll = [
+  async (req, res, next) =>
+    await authOwner(req, res, next, { folderId: Number(req.params.folderId) }),
+  async (req, res) => {
+    const folderId = Number(req.params.folderId);
+    await prisma.file.deleteMany({
+      where: {
+        folderId: folderId,
+      },
+    });
+    res.redirect(`/folders/${folderId}`);
+  },
+];
