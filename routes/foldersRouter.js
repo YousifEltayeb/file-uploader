@@ -7,5 +7,7 @@ const foldersController = require("../controllers/folderController");
 foldersRouter.post("/create", foldersController.postCreate);
 foldersRouter.get("/:folderId", foldersController.getRead);
 foldersRouter.post("/upload/:folderId", foldersController.postUploadFile);
+foldersRouter.get("/update/:folderId", foldersController.getUpdate);
+foldersRouter.post("/update/:folderId", foldersController.postUpdate);
 
 module.exports = foldersRouter;

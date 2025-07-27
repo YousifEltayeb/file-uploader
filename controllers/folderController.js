@@ -2,7 +2,9 @@ const prisma = require("../config/prismaClient");
 const {
   validateCreateFolder,
   validationResult,
+  validateUpdateFolder,
 } = require("../utils/validation");
+const { authOwner } = require("../utils/authOwner");
 const multer = require("multer");
 
 const storage = multer.diskStorage({
@@ -54,31 +56,29 @@ exports.getRead = async (req, res) => {
 };
 
 exports.postUploadFile = [
+  async (req, res, next) => {
+    authOwner(req, res, next, { folderId: Number(req.params.folderId) });
+  },
   upload.single("file"),
   async (req, res) => {
+    const { originalname: title, size, path: url } = req.file;
     const folderId = Number(req.params.folderId);
-    const userId = req.user.id;
-    const foldersList = await prisma.folder.findMany({ where: { userId } });
-    console.log("userId", userId);
-    console.log("folder list", foldersList);
-    const foundFolder = foldersList.find((folder) => folder.id === folderId);
-    if (foundFolder) {
-      const title = req.file.originalname;
-      const size = req.file.size;
-      // to be changed
-      const url = req.file.path;
-      await prisma.file.create({
-        data: {
-          title,
-          url,
-          size,
-          folderId,
-          userId,
-        },
-      });
-      res.redirect(`/folders/${folderId}`);
-    } else {
-      res.send("this ain't your forlder dawg");
-    }
+    await prisma.file.create({
+      data: {
+        title,
+        url,
+        size,
+        folderId,
+        userId: req.user.id,
+      },
+    });
+    res.redirect(`/folders/${folderId}`);
   },
 ];
+
+exports.getUpdate = async (req, res) => {
+  const folderId = Number(req.params.folderId);
+  const folder = await prisma.folder.findUnique({ where: { id: folderId } });
+  res.render("updateFolder", { folder });
+};
+exports.postUpdate = [validateUpdateFolder];

@@ -15,7 +15,6 @@ exports.postSignup = [
   validateSignup,
   async (req, res) => {
     const errors = validationResult(req);
-
     if (!errors.isEmpty()) {
       return res.status(400).render("signup", {
         validationError: errors.array(),
@@ -27,7 +26,7 @@ exports.postSignup = [
     await prisma.user.create({
       data: {
         email,
-        hashedPassword,
+        password: hashedPassword,
       },
     });
 
@@ -68,7 +67,7 @@ exports.postLogin = [
   }),
 ];
 
-exports.postLogout = async (req, res) => {
+exports.getLogout = async (req, res) => {
   req.logout((err) => {
     if (err) {
       return next(err);

@@ -19,7 +19,7 @@ const validateSignup = [
     .custom(async (value) => {
       const user = await prisma.user.findUnique({
         where: {
-          email: email,
+          email: value,
         },
       });
 
@@ -86,9 +86,22 @@ const validateCreateFolder = [
     .isAlpha()
     .withMessage(`Title must contain characters only`),
 ];
+const validateUpdateFolder = [
+  body("title")
+    .exists()
+    .withMessage(`Title ${existErr}`)
+    .bail()
+    .trim()
+    .notEmpty()
+    .withMessage(`Title ${emptyErr}`)
+    .bail()
+    .isAlpha()
+    .withMessage(`Title must contain characters only`),
+];
 module.exports = {
   validateCreateFolder,
   validateLogin,
   validateSignup,
   validationResult,
+  validateUpdateFolder,
 };
