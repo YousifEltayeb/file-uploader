@@ -6,7 +6,7 @@
     <title>Update folder title</title>
   </head>
   <body>
-    <form action="/folders/update/<%= folder.id %>">
+    <form action="/folders/update/<%= folder.id %>" method="POST">
       <label for="title">New folder name: </label>
       <input type="text" name="title" value="<%= folder.title %>" />
       <button type="submit">Update folder</button>

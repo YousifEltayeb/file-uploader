@@ -81,4 +81,17 @@ exports.getUpdate = async (req, res) => {
   const folder = await prisma.folder.findUnique({ where: { id: folderId } });
   res.render("updateFolder", { folder });
 };
-exports.postUpdate = [validateUpdateFolder];
+exports.postUpdate = [
+  async (req, res, next) =>
+    await authOwner(req, res, next, { folderId: Number(req.params.folderId) }),
+  validateUpdateFolder,
+  async (req, res) => {
+    const folderId = Number(req.params.folderId);
+    const newTitle = req.body.title;
+    await prisma.folder.update({
+      where: { id: folderId },
+      data: { title: newTitle },
+    });
+    res.redirect("/");
+  },
+];

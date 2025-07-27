@@ -22,7 +22,8 @@
     </form>
     <p>There are: <%= files.length %> files in this folder</p>
     <% files.forEach(function(file) { %>
-    <a href="/files/:<%= file.id %>">Title: <%= file.title %></a>
+    <a href="/files/<%= file.id %>">Title: <%= file.title %></a>
+    <br />
     <% }) %> <% } %>
   </body>
 </html>
