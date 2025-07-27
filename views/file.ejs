@@ -15,5 +15,9 @@
       <br />
       Folder: <%= file.folder.title%>
     </p>
+    <br />
+    <a href="/files/update/<%= file.id %>">Update file title</a>
+    <br />
+    <a href="<%= file.url %>" download="<%= file.title %>">Download</a>
   </body>
 </html>

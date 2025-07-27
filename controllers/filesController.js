@@ -4,7 +4,6 @@ const { validateUpdateFile, validationResult } = require("../utils/validation");
 
 exports.getFile = [
   async (req, res, next) => {
-    console.log(req.params.fileId);
     await authOwner(req, res, next, { fileId: Number(req.params.fileId) });
   },
   async (req, res) => {
@@ -14,5 +13,37 @@ exports.getFile = [
       include: { folder: true },
     });
     res.render("file", { file });
+  },
+];
+
+exports.getUpdate = [
+  async (req, res, next) => {
+    await authOwner(req, res, next, { fileId: Number(req.params.fileId) });
+  },
+  async (req, res) => {
+    const fileId = Number(req.params.fileId);
+    const file = await prisma.file.findUnique({ where: { id: fileId } });
+    res.render("updateFile", { file });
+  },
+];
+exports.postUpdate = [
+  async (req, res, next) => {
+    await authOwner(req, res, next, { fileId: Number(req.params.fileId) });
+  },
+  validateUpdateFile,
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).render("home", {
+        validationError: errors.array(),
+      });
+    }
+    const fileId = Number(req.params.fileId);
+    const newTitle = req.body.title;
+    await prisma.file.update({
+      where: { id: fileId },
+      data: { title: newTitle },
+    });
+    res.redirect(`/files/${fileId}`);
   },
 ];

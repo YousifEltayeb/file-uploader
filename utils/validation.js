@@ -98,10 +98,23 @@ const validateUpdateFolder = [
     .isAlpha()
     .withMessage(`Title must contain characters only`),
 ];
+const validateUpdateFile = [
+  body("title")
+    .exists()
+    .withMessage(`Title ${existErr}`)
+    .bail()
+    .trim()
+    .notEmpty()
+    .withMessage(`Title ${emptyErr}`)
+    .bail()
+    .isAlpha()
+    .withMessage(`Title must contain characters only`),
+];
 module.exports = {
   validateCreateFolder,
   validateLogin,
   validateSignup,
   validationResult,
   validateUpdateFolder,
+  validateUpdateFile,
 };
