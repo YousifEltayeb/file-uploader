@@ -56,12 +56,21 @@ exports.postDelete = [
   async (req, res) => {
     const fileId = Number(req.params.fileId);
     const file = await prisma.file.findUnique({ where: { id: fileId } });
-    await prisma.file.delete({
-      where: {
-        id: fileId,
-      },
-    });
-    res.redirect(`/folders/${file.folderId}`);
+    const { error } = await supabase.storage
+      .from("file-uploader")
+      .remove([file.url]);
+
+    if (error) {
+      console.error(error);
+      res.send(error);
+    } else {
+      await prisma.file.delete({
+        where: {
+          id: fileId,
+        },
+      });
+      res.redirect(`/folders/${file.folderId}`);
+    }
   },
 ];
 
@@ -70,12 +79,22 @@ exports.postDeleteAll = [
     await authOwner(req, res, next, { folderId: Number(req.params.folderId) }),
   async (req, res) => {
     const folderId = Number(req.params.folderId);
-    await prisma.file.deleteMany({
-      where: {
-        folderId: folderId,
-      },
-    });
-    res.redirect(`/folders/${folderId}`);
+    const files = await prisma.file.findMany({ where: { folderId: folderId } });
+    const UrlsToDelete = files.map((file) => file.url);
+    const { error } = await supabase.storage
+      .from("file-uploader")
+      .remove(UrlsToDelete);
+    if (error) {
+      console.error(error);
+      res.send(error);
+    } else {
+      await prisma.file.deleteMany({
+        where: {
+          folderId: folderId,
+        },
+      });
+      res.redirect(`/folders/${folderId}`);
+    }
   },
 ];
 
