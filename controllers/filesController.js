@@ -2,6 +2,8 @@ const prisma = require("../config/prismaClient");
 const { authOwner } = require("../utils/authOwner");
 const { validateUpdateFile, validationResult } = require("../utils/validation");
 
+const supabase = require("../config/supbaseClient");
+
 exports.getFile = [
   async (req, res, next) => {
     await authOwner(req, res, next, { fileId: Number(req.params.fileId) });
@@ -74,5 +76,25 @@ exports.postDeleteAll = [
       },
     });
     res.redirect(`/folders/${folderId}`);
+  },
+];
+
+exports.postDownload = [
+  async (req, res, next) =>
+    authOwner(req, res, next, { fileId: Number(req.params.fileId) }),
+  async (req, res) => {
+    const filePath = await prisma.file.findUnique({
+      where: { id: Number(req.params.fileId) },
+      select: { url: true },
+    });
+    const { data, error } = await supabase.storage
+      .from("file-uploader")
+      .createSignedUrl(filePath.url, 60, { download: true });
+    if (error) {
+      console.error(error);
+      res.send(error);
+    } else {
+      res.render("download", { link: data.signedUrl });
+    }
   },
 ];

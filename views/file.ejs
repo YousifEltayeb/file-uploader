@@ -18,7 +18,9 @@
     <br />
     <a href="/files/update/<%= file.id %>">Update file title</a>
     <br />
-    <a href="<%= file.url %>" download="<%= file.title %>">Download</a>
+    <form action="/files/download/<%= file.id %>" method="POST">
+      <button type="submit">Download</button>
+    </form>
     <br />
     <br />
     <form action="/files/delete/<%= file.id %>" method="POST">
