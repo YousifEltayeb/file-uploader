@@ -95,7 +95,15 @@ exports.postUpdate = [
     await authOwner(req, res, next, { folderId: Number(req.params.folderId) }),
   validateUpdateFolder,
   async (req, res) => {
+    const errors = validationResult(req);
     const folderId = Number(req.params.folderId);
+    const folder = await prisma.folder.findUnique({ where: { id: folderId } });
+    if (!errors.isEmpty()) {
+      return res.status(400).render("updateFolder", {
+        validationError: errors.array(),
+        folder,
+      });
+    }
     const newTitle = req.body.title;
     await prisma.folder.update({
       where: { id: folderId },

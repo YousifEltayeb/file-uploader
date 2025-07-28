@@ -6,6 +6,7 @@
     <title>Update file title</title>
   </head>
   <body>
+    <%- include("errors.ejs") %>
     <form action="/files/update/<%= file.id %>" method="POST">
       <label for="title">New file name: </label>
       <input type="text" name="title" value="<%= file.title %>" />

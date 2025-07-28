@@ -6,6 +6,7 @@
     <title>Update folder title</title>
   </head>
   <body>
+    <%- include("errors.ejs") %>
     <form action="/folders/update/<%= folder.id %>" method="POST">
       <label for="title">New folder name: </label>
       <input type="text" name="title" value="<%= folder.title %>" />

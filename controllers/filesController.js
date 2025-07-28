@@ -35,12 +35,14 @@ exports.postUpdate = [
   validateUpdateFile,
   async (req, res) => {
     const errors = validationResult(req);
+    const fileId = Number(req.params.fileId);
+    const file = await prisma.file.findUnique({ where: { id: fileId } });
     if (!errors.isEmpty()) {
-      return res.status(400).render("home", {
+      return res.status(400).render("updateFile", {
         validationError: errors.array(),
+        file,
       });
     }
-    const fileId = Number(req.params.fileId);
     const newTitle = req.body.title;
     await prisma.file.update({
       where: { id: fileId },
