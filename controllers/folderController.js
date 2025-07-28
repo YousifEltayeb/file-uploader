@@ -5,16 +5,11 @@ const {
   validateUpdateFolder,
 } = require("../utils/validation");
 const { authOwner } = require("../utils/authOwner");
+const supabase = require("../config/supbaseClient");
+const mime = require("mime-types");
 const multer = require("multer");
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
+const { nanoid } = require("nanoid");
+const storage = multer.memoryStorage();
 // 5 mb limit and 1 file
 const upload = multer({
   storage: storage,
@@ -61,18 +56,32 @@ exports.postUploadFile = [
   },
   upload.single("file"),
   async (req, res) => {
-    const { originalname: title, size, path: url } = req.file;
+    const { originalname: title, size } = req.file;
     const folderId = Number(req.params.folderId);
-    await prisma.file.create({
-      data: {
-        title,
-        url,
-        size,
-        folderId,
-        userId: req.user.id,
-      },
-    });
-    res.redirect(`/folders/${folderId}`);
+    const ext = mime.extension(req.file.mimetype);
+    //some random id to save it in supabase
+    const id = nanoid();
+    const filePath = `supabase/${id}.${ext}`;
+    const { data, error } = await supabase.storage
+      .from("file-uploader")
+      .upload(filePath, req.file.buffer);
+    if (error) {
+      // Handle error
+      console.error(error);
+      res.send(error);
+    } else {
+      // Handle success
+      await prisma.file.create({
+        data: {
+          title,
+          url: data.path,
+          size,
+          folderId,
+          userId: req.user.id,
+        },
+      });
+      res.redirect(`/folders/${folderId}`);
+    }
   },
 ];
 
@@ -106,6 +115,7 @@ exports.postDelete = [
       where: { id: folderId },
       include: { files: true },
     });
+
     if (folder.files.length > 0) {
       return res.send("you can only delete a folder it doesnt have files");
     }
